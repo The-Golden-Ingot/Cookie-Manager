@@ -7,7 +7,7 @@ function initialize() {
 
     // Load profiles
     chrome.runtime.sendMessage({action: 'getProfiles'}, (response) => {
-        profiles = response;
+        profiles = Array.isArray(response) ? response : [];
         renderProfiles();
     });
 
@@ -82,6 +82,10 @@ function initialize() {
 
     function renderProfiles() {
         profilesContainer.innerHTML = '';
+        if (!Array.isArray(profiles)) {
+            console.error('Profiles is not an array:', profiles);
+            profiles = []; // Reset to an empty array
+        }
         profiles.forEach((profile, index) => {
             const profileElement = document.createElement('div');
             profileElement.className = 'profile';
@@ -94,11 +98,6 @@ function initialize() {
             `;
             profilesContainer.appendChild(profileElement);
         });
-
-        // Remove this block as it's not needed in the popup context
-        // if (isIframe) {
-        //     window.parent.postMessage({ action: 'resize', height: document.body.scrollHeight }, '*');
-        // }
     }
 
     function updateProfiles() {
@@ -127,13 +126,6 @@ function initialize() {
         });
         updateProfiles();
     });
-
-    // Remove this event listener as it's not needed in the popup context
-    // window.addEventListener('message', (event) => {
-    //     if (event.data.action === 'someAction') {
-    //         // Handle messages from the parent window
-    //     }
-    // });
 }
 
 document.addEventListener('DOMContentLoaded', initialize);
