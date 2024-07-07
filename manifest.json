@@ -6,7 +6,9 @@
   "permissions": [
     "cookies",
     "storage",
-    "activeTab"
+    "activeTab",
+    "contextMenus",
+    "downloads"
   ],
   "host_permissions": [
     "<all_urls>"
@@ -37,5 +39,6 @@
       "resources": ["iframe.html", "draggable.bundle.js"],
       "matches": ["<all_urls>"]
     }
-  ]
+  ],
+  "options_page": "options.html"
 }

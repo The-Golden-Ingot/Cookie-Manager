@@ -10,6 +10,19 @@ chrome.runtime.onInstalled.addListener(() => {
       });
     }
   });
+
+  // Create context menu items for exporting and importing profiles
+  chrome.contextMenus.create({
+    id: "exportProfiles",
+    title: "Export Profiles",
+    contexts: ["action"]
+  });
+
+  chrome.contextMenus.create({
+    id: "importProfiles",
+    title: "Import Profiles",
+    contexts: ["action"]
+  });
 });
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
@@ -25,13 +38,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     return true; // Keep the message channel open for asynchronous response
   } else if (request.type === 'iframeLoaded') {
     console.log('Iframe reported as loaded');
-    // Implement any necessary logic here
     sendResponse({received: true}); // Always send a response
     return true; // Keep the message channel open for asynchronous response
   }
 });
 
-// Add this new listener for the extension icon click
+// Listener for the extension icon click
 chrome.action.onClicked.addListener((tab) => {
   if (tab && tab.id) {
     chrome.tabs.sendMessage(tab.id, { action: 'toggleUI' }, (response) => {
@@ -45,3 +57,27 @@ chrome.action.onClicked.addListener((tab) => {
     console.error('Invalid tab or tab ID');
   }
 });
+
+// Handle context menu clicks
+chrome.contextMenus.onClicked.addListener((info, tab) => {
+  if (info.menuItemId === "exportProfiles") {
+    exportProfiles();
+  } else if (info.menuItemId === "importProfiles") {
+    chrome.tabs.create({ url: 'chrome://extensions/?options=' + chrome.runtime.id });
+  }
+});
+
+function exportProfiles() {
+  chrome.storage.local.get('profiles', (result) => {
+    const profiles = result.profiles || [];
+    const jsonString = JSON.stringify(profiles, null, 2);
+    
+    const dataUrl = 'data:application/json;charset=utf-8,' + encodeURIComponent(jsonString);
+    
+    chrome.downloads.download({
+      url: dataUrl,
+      filename: "cookie_profiles.json",
+      saveAs: true
+    });
+  });
+}
