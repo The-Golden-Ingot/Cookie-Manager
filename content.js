@@ -1,25 +1,39 @@
 let uiInjected = false;
+let uiReady = false;
+const uiReadyPromise = new Promise(resolve => {
+  window.addEventListener('message', function(event) {
+    if (event.data.type === 'uiReady') {
+      uiReady = true;
+      resolve();
+    }
+  });
+});
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.action === 'toggleUI') {
-    if (!uiInjected) {
-      injectUI();
-    } else {
-      toggleUI();
+  try {
+    if (request.action === 'toggleUI') {
+      if (!uiInjected) {
+        injectUI();
+      } else {
+        toggleUI();
+      }
+      sendResponse({ success: true });
+    } else if (request.action === 'getCurrentCookies') {
+      const cookies = document.cookie.split(';').map(cookie => cookie.trim());
+      const domain = window.location.hostname;
+      sendResponse({ cookies, domain });
+    } else if (request.action === 'applyProfile') {
+      applyProfile(request.cookies);
+      sendResponse({ success: true });
+    } else if (request.action === 'importProfiles') {
+      importProfiles();
+      sendResponse({ success: true });
+    } else if (request.action === 'checkContentScriptReady') {
+      sendResponse({ready: true});
     }
-    sendResponse({ success: true });
-  } else if (request.action === 'getCurrentCookies') {
-    const cookies = document.cookie.split(';').map(cookie => cookie.trim());
-    const domain = window.location.hostname;
-    sendResponse({ cookies, domain });
-  } else if (request.action === 'applyProfile') {
-    applyProfile(request.cookies);
-    sendResponse({ success: true });
-  } else if (request.action === 'importProfiles') {
-    importProfiles();
-    sendResponse({ success: true });
-  } else if (request.action === 'checkContentScriptReady') {
-    sendResponse({ready: true});
+  } catch (error) {
+    console.error('Error in message handling:', error);
+    sendResponse({ error: error.message });
   }
   return true; // Keep the message channel open for asynchronous responses
 });
@@ -50,28 +64,26 @@ function toggleUI() {
   }
 }
 
-function applyProfile(cookies) {
-  // Clear existing cookies
-  const existingCookies = document.cookie.split(';');
-  for (let i = 0; i < existingCookies.length; i++) {
-    const cookie = existingCookies[i];
-    const eqPos = cookie.indexOf('=');
-    const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
-    document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;';
-  }
-
-  // Set new cookies
-  cookies.forEach(cookie => {
-    document.cookie = cookie;
+function applyProfile(cookies, profileName) {
+  // ... (setting cookies)
+  chrome.storage.local.set({ uiState: { injected: true, currentProfile: profileName } }, () => {
+      // Reload the page
+      location.reload();
   });
+}
 
-  // Notify the page that cookies have changed
-  window.dispatchEvent(new Event('cookiesChanged'));
-
-  // Save UI state before reloading
-  chrome.storage.local.set({ uiState: { injected: true } }, () => {
-    // Reload the page
-    location.reload();
+function deleteCookie(name) {
+  return new Promise((resolve, reject) => {
+    chrome.cookies.remove({
+      url: window.location.origin,
+      name: name
+    }, (details) => {
+      if (chrome.runtime.lastError) {
+        reject(chrome.runtime.lastError);
+      } else {
+        resolve(details);
+      }
+    });
   });
 }
 
@@ -87,11 +99,15 @@ function importProfiles() {
     reader.onload = (e) => {
       try {
         const importedProfiles = JSON.parse(e.target.result);
+        if (!Array.isArray(importedProfiles)) {
+          throw new Error('Invalid profile format');
+        }
         chrome.storage.local.set({ profiles: importedProfiles }, () => {
           alert('Profiles imported successfully');
         });
       } catch (error) {
-        alert('Error importing profiles: ' + error.message);
+        console.error('Error parsing profiles:', error.message);
+        alert(`Failed to import profiles: ${error.message}`);
       }
     };
 
@@ -123,3 +139,6 @@ function checkAndRestoreUI() {
 
 // Call this function when the content script is first loaded
 checkAndRestoreUI();
+
+// Notify that the UI is ready
+window.parent.postMessage({ type: 'uiReady' }, '*');
