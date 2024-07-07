@@ -52,11 +52,12 @@ function initialize() {
         if (profile && !actionBtn) {
             const profileName = profile.querySelector('span').textContent;
             const profileData = profiles.find(p => p.name === profileName);
-            if (profileData && confirm(`Apply ${profileName}?`)) {
+            if (profileData) {
                 chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
                     chrome.tabs.sendMessage(tabs[0].id, {action: 'applyProfile', cookies: profileData.cookies}, (response) => {
                         if (response.success) {
                             alert(`Applied ${profileName}`);
+                            highlightCurrentProfile(profileName); // Highlight the current profile
                         }
                     });
                 });
@@ -72,10 +73,8 @@ function initialize() {
                     updateProfiles();
                 }
             } else if (action === 'delete') {
-                if (confirm(`Delete ${profiles[index].name}?`)) {
-                    profiles.splice(index, 1);
-                    updateProfiles();
-                }
+                profiles.splice(index, 1);
+                updateProfiles();
             }
         }
     });
@@ -86,17 +85,21 @@ function initialize() {
             console.error('Profiles is not an array:', profiles);
             profiles = []; // Reset to an empty array
         }
+        const uniqueProfiles = new Map();
         profiles.forEach((profile, index) => {
-            const profileElement = document.createElement('div');
-            profileElement.className = 'profile';
-            profileElement.innerHTML = `
-                <span>${profile.name}</span>
-                <div class="action-buttons">
-                    <button class="action-btn" data-action="edit" data-index="${index}">✏️</button>
-                    <button class="action-btn" data-action="delete" data-index="${index}">🗑️</button>
-                </div>
-            `;
-            profilesContainer.appendChild(profileElement);
+            if (!uniqueProfiles.has(profile.name)) {
+                uniqueProfiles.set(profile.name, profile);
+                const profileElement = document.createElement('div');
+                profileElement.className = 'profile';
+                profileElement.innerHTML = `
+                    <span>${profile.name}</span>
+                    <div class="action-buttons">
+                        <button class="action-btn" data-action="edit" data-index="${index}">✏️</button>
+                        <button class="action-btn" data-action="delete" data-index="${index}">🗑️</button>
+                    </div>
+                `;
+                profilesContainer.appendChild(profileElement);
+            }
         });
     }
 
@@ -104,6 +107,16 @@ function initialize() {
         chrome.runtime.sendMessage({action: 'updateProfiles', profiles: profiles}, (response) => {
             if (response.success) {
                 renderProfiles();
+            }
+        });
+    }
+
+    function highlightCurrentProfile(profileName) {
+        const profilesContainer = document.querySelector('.profiles');
+        profilesContainer.querySelectorAll('.profile').forEach(profile => {
+            profile.classList.remove('current');
+            if (profile.querySelector('span').textContent === profileName) {
+                profile.classList.add('current');
             }
         });
     }
