@@ -8,17 +8,21 @@
     --shadow-color: rgba(0, 0, 0, 0.3);
 }
 
-body {
-    width: 360px;
+html, body {
     margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
     font-family: Arial, sans-serif;
-    background-color: var(--background-color);
+    background-color: transparent;
     color: var(--text-color);
 }
 
 #cookie-profiles-manager {
     position: relative;
     z-index: 9999999;
+    width: 100%;
+    height: 100%;
 }
 
 .container {
@@ -26,12 +30,14 @@ body {
     border-radius: 16px;
     padding: 24px;
     width: 100%;
+    height: 100%;
     box-sizing: border-box;
-    max-height: 600px;
     display: flex;
     flex-direction: column;
     overflow: hidden;
 }
+
+/* Rest of the CSS remains the same */
 
 .header {
     display: flex;

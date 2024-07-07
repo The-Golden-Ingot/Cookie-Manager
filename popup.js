@@ -5,6 +5,8 @@ function initialize() {
     const addressBar = document.querySelector('.address-bar');
     const saveCurrentCookieBtn = document.querySelector('#saveCurrentCookieBtn');
 
+    const isIframe = window !== window.top;
+
     // Load profiles
     chrome.runtime.sendMessage({action: 'getProfiles'}, (response) => {
         profiles = response;
@@ -86,6 +88,10 @@ function initialize() {
             `;
             profilesContainer.appendChild(profileElement);
         });
+
+        if (isIframe) {
+            window.parent.postMessage({ action: 'resize', height: document.body.scrollHeight }, '*');
+        }
     }
 
     function updateProfiles() {
@@ -113,6 +119,13 @@ function initialize() {
             return profiles.find(p => p.name === name);
         });
         updateProfiles();
+    });
+
+    // Add an event listener for messages from the parent
+    window.addEventListener('message', (event) => {
+        if (event.data.action === 'someAction') {
+            // Handle messages from the parent window
+        }
     });
 }
 
