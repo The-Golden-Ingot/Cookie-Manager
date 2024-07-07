@@ -1,18 +1,19 @@
+:root {
+    --primary-color: #6366f1;
+    --background-color: #1f2937;
+    --card-background: #374151;
+    --text-color: #f3f4f6;
+    --secondary-text-color: #9ca3af;
+    --border-color: #4b5563;
+    --shadow-color: rgba(0, 0, 0, 0.3);
+}
+
 body {
     width: 360px;
     margin: 0;
-    padding: 0;
     font-family: Arial, sans-serif;
-    background-color: transparent;
-}
-
-#popup-wrapper {
-    width: 100%;
-    padding: 16px;
-    box-sizing: border-box;
     background-color: var(--background-color);
-    border-radius: 16px;
-    overflow: hidden;
+    color: var(--text-color);
 }
 
 #cookie-profiles-manager {
@@ -30,7 +31,6 @@ body {
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    box-shadow: 0 0 0 8px var(--background-color);
 }
 
 .header {
@@ -212,17 +212,4 @@ h2 {
 
 .draggable-container--is-dragging {
     cursor: grabbing;
-}
-
-.draggable-source--is-dragging {
-    opacity: 0.5;
-}
-
-.draggable-mirror {
-    opacity: 1 !important;
-    z-index: 10000000 !important;
-    transition: none;
-    position: fixed !important;
-    pointer-events: none;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }

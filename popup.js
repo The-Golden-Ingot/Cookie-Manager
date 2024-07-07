@@ -1,32 +1,14 @@
 let profiles = [];
 
-function loadScript(src) {
-    return new Promise((resolve, reject) => {
-        const script = document.createElement('script');
-        script.src = src;
-        script.onload = resolve;
-        script.onerror = reject;
-        document.head.appendChild(script);
-    });
-}
-
-async function initialize() {
+function initialize() {
     const profilesContainer = document.querySelector('.profiles');
     const addressBar = document.querySelector('.address-bar');
     const saveCurrentCookieBtn = document.querySelector('#saveCurrentCookieBtn');
-
-    // Load Draggable library
-    try {
-        await loadScript(chrome.runtime.getURL('draggable.bundle.js'));
-    } catch (error) {
-        console.error('Failed to load Draggable library:', error);
-    }
 
     // Load profiles
     chrome.runtime.sendMessage({action: 'getProfiles'}, (response) => {
         profiles = response;
         renderProfiles();
-        initializeDraggable();
     });
 
     // Get current tab URL
@@ -110,38 +92,28 @@ async function initialize() {
         chrome.runtime.sendMessage({action: 'updateProfiles', profiles: profiles}, (response) => {
             if (response.success) {
                 renderProfiles();
-                initializeDraggable();
             }
         });
     }
 
-    function initializeDraggable() {
-        if (typeof Draggable !== 'undefined') {
-            try {
-                const sortable = new Draggable.Sortable(profilesContainer, {
-                    draggable: '.profile',
-                    handle: '.profile',
-                    mirror: {
-                        constrainDimensions: true,
-                        xAxis: false,
-                        appendTo: 'body'
-                    }
-                });
-
-                sortable.on('sortable:stop', () => {
-                    profiles = Array.from(profilesContainer.children).map(profile => {
-                        const name = profile.querySelector('span').textContent;
-                        return profiles.find(p => p.name === name);
-                    });
-                    updateProfiles();
-                });
-            } catch (error) {
-                console.error('Error initializing Draggable:', error);
-            }
-        } else {
-            console.error('Draggable library not loaded');
+    // Initialize Draggable
+    const sortable = new Draggable.Sortable(profilesContainer, {
+        draggable: '.profile',
+        handle: '.profile',
+        mirror: {
+            constrainDimensions: true,
+            xAxis: false,
+            appendTo: 'body'
         }
-    }
+    });
+
+    sortable.on('sortable:stop', () => {
+        profiles = Array.from(profilesContainer.children).map(profile => {
+            const name = profile.querySelector('span').textContent;
+            return profiles.find(p => p.name === name);
+        });
+        updateProfiles();
+    });
 }
 
 document.addEventListener('DOMContentLoaded', initialize);

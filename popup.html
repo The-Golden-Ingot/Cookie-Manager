@@ -5,16 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cookie Profile Manager</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@shopify/draggable@1.0.0-beta.8/lib/draggable.bundle.js"></script>
 </head>
 <body>
-    <div id="popup-wrapper">
-        <div id="cookie-profiles-manager">
-            <div class="container">
-                <!-- Your existing content -->
+    <div id="cookie-profiles-manager">
+        <div class="container">
+            <div class="header">
+                <div class="title">
+                    <span class="icon">🍪</span>
+                    <h2>Cookie manager</h2>
+                </div>
             </div>
+            <div class="address-bar"></div>
+            <button id="saveCurrentCookieBtn">Save current cookie to new profile</button>
+            <div class="profiles"></div>
         </div>
     </div>
-    <script src="draggable.bundle.js"></script>
     <script src="popup.js"></script>
 </body>
 </html>
