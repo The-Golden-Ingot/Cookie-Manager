@@ -8,6 +8,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       toggleUI();
     }
     sendResponse({ success: true });
+  } else if (request.action === 'getCurrentCookies') {
+    const cookies = document.cookie.split(';').map(cookie => cookie.trim());
+    const domain = window.location.hostname;
+    sendResponse({ cookies, domain });
   }
   // ... other message handlers
 });
@@ -37,5 +41,3 @@ function toggleUI() {
     iframe.style.display = iframe.style.display === 'none' ? 'block' : 'none';
   }
 }
-
-// ... other content script code

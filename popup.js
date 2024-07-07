@@ -26,14 +26,18 @@ function initialize() {
 
         chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
             chrome.tabs.sendMessage(tabs[0].id, {action: 'getCurrentCookies'}, (response) => {
-                const profileName = prompt('Enter new profile name:');
-                if (profileName && profileName.trim()) {
-                    profiles.push({ name: profileName, cookies: response.cookies, domain: response.domain });
-                    updateProfiles();
-                    saveCurrentCookieBtn.classList.add('pulse');
-                    setTimeout(() => {
-                        saveCurrentCookieBtn.classList.remove('pulse');
-                    }, 500);
+                if (response && response.cookies) {
+                    const profileName = prompt('Enter new profile name:');
+                    if (profileName && profileName.trim()) {
+                        profiles.push({ name: profileName, cookies: response.cookies, domain: response.domain });
+                        updateProfiles();
+                        saveCurrentCookieBtn.classList.add('pulse');
+                        setTimeout(() => {
+                            saveCurrentCookieBtn.classList.remove('pulse');
+                        }, 500);
+                    }
+                } else {
+                    console.error('Failed to get current cookies');
                 }
             });
         });
