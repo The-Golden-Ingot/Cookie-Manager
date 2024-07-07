@@ -5,77 +5,74 @@
     --secondary-text-color: #9ca3af;
     --border-color: #4b5563;
     --shadow-color: rgba(0, 0, 0, 0.3);
-}
-
-html, body {
+    --container-width: 360px;
+    --container-height: 600px;
+    --button-width: 80%;
+    --profile-background: #161718;
+  }
+  
+  body {
     margin: 0;
     padding: 0;
-    width: 100%;
-    height: 100%;
     font-family: Arial, sans-serif;
     background-color: var(--background-color);
     color: var(--text-color);
-}
-
-#cookie-profiles-manager {
-    width: 100%;
-    height: 100%;
+  }
+  
+  #cookie-profiles-manager {
     display: flex;
     justify-content: center;
     align-items: center;
-}
-
-.container {
+    min-height: 100vh;
+  }
+  
+  .container {
     border-radius: 16px;
     padding: 24px;
-    width: 360px;
-    height: 600px;
+    width: var(--container-width);
+    height: var(--container-height);
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     overflow: hidden;
-}
-
-/* Rest of the CSS remains the same */
-
-.header {
+  }
+  
+  .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin:auto;
+    margin: auto;
     margin-bottom: 20px;
-}
-
-.title {
+  }
+  
+  .title {
     display: flex;
     align-items: center;
-}
-
-.icon {
+  }
+  
+  .icon {
     font-size: 24px;
     margin-right: 12px;
-}
-
-h2 {
+  }
+  
+  h2 {
     margin: 0;
     font-size: 20px;
     font-weight: 600;
-}
-
-.address-bar {
-    background-color: #161718;
+  }
+  
+  .address-bar {
+    background-color: var(--profile-background);
     border-radius: 8px;
     padding: 10px;
     text-align: center;
-    margin-bottom: 20px;
-    margin:auto;
-    min-width:230px;
+    margin: auto auto 20px;
+    min-width: 230px;
     font-size: 14px;
     color: var(--secondary-text-color);
-    
-}
-
-#saveCurrentCookieBtn {
+  }
+  
+  #saveCurrentCookieBtn {
     background-color: var(--primary-color);
     color: var(--text-color);
     border: none;
@@ -86,68 +83,36 @@ h2 {
     transition: all 0.3s ease;
     margin: 10px auto 20px;
     display: block;
-    width: 80%;
+    width: var(--button-width);
     text-align: center;
     box-shadow: 0 2px 4px var(--shadow-color);
     position: relative;
     overflow: hidden;
-}
-
-#saveCurrentCookieBtn:hover {
+  }
+  
+  #saveCurrentCookieBtn:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 6px var(--shadow-color);
-}
-
-#saveCurrentCookieBtn:active {
+  }
+  
+  #saveCurrentCookieBtn:active {
     transform: translateY(0);
     box-shadow: 0 1px 2px var(--shadow-color);
-}
-
-@keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
-}
-
-#saveCurrentCookieBtn.pulse {
-    animation: pulse 0.5s ease-in-out;
-}
-
-@keyframes ripple {
-    0% { transform: scale(0); opacity: 1; }
-    100% { transform: scale(1.5); opacity: 0; }
-}
-
-#saveCurrentCookieBtn::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 100px;
-    height: 100px;
-    background-color: rgba(255, 255, 255, 0.3);
-    border-radius: 50%;
-    transform: translate(-50%, -50%) scale(0);
-    opacity: 0;
-}
-
-#saveCurrentCookieBtn.clicked::after {
-    animation: ripple 0.6s linear;
-}
-
-.profiles {
+  }
+  
+  .profiles {
     flex-grow: 1;
     overflow-y: auto;
     margin-bottom: 20px;
     padding: 4px;
     position: relative;
-}
-
-.profile {
+  }
+  
+  .profile {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #161718;
+    background-color: var(--profile-background);
     padding: 12px;
     border-radius: 8px;
     margin-bottom: 8px;
@@ -157,35 +122,35 @@ h2 {
     box-shadow: 0 2px 4px var(--shadow-color);
     position: relative;
     overflow: hidden;
-}
-
-.profile:active {
+  }
+  
+  .profile:active {
     cursor: grabbing;
-}
-
-.profile span {
+  }
+  
+  .profile span {
     color: var(--text-color);
     font-weight: 500;
-}
-
-.profile:hover {
+  }
+  
+  .profile:hover {
     background-color: var(--primary-color);
     transform: translateY(-2px);
     box-shadow: 0 4px 6px var(--shadow-color);
-}
-
-.action-buttons {
+  }
+  
+  .action-buttons {
     display: flex;
     gap: 8px;
     opacity: 0;
     transition: opacity 0.3s ease;
-}
-
-.profile:hover .action-buttons {
+  }
+  
+  .profile:hover .action-buttons {
     opacity: 1;
-}
-
-.action-btn {
+  }
+  
+  .action-btn {
     background-color: rgba(255, 255, 255, 0.1);
     border: none;
     border-radius: 4px;
@@ -199,58 +164,91 @@ h2 {
     display: flex;
     align-items: center;
     justify-content: center;
-}
-
-.action-btn:hover {
+  }
+  
+  .action-btn:hover {
     transform: scale(1.1);
     background-color: rgba(255, 255, 255, 0.2);
-}
-
-.draggable-source--is-dragging {
+  }
+  
+  /* Draggable styles */
+  .draggable-source--is-dragging {
     opacity: 0;
-}
-
-.draggable-mirror {
+  }
+  
+  .draggable-mirror {
     opacity: 1 !important;
     z-index: 10000000 !important;
     transition: none;
     position: fixed;
     pointer-events: none;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-.draggable-container--is-dragging {
+  }
+  
+  .draggable-container--is-dragging {
     cursor: grabbing;
-}
-::-webkit-scrollbar {
+  }
+  
+  /* Scrollbar styles */
+  ::-webkit-scrollbar {
     width: 10px;
     height: 10px;
     transition: 1.0s;
-}
-
-::-webkit-scrollbar-thumb {
+  }
+  
+  ::-webkit-scrollbar-thumb {
     background-color: rgba(127, 127, 127, 0.6);
     background-clip: padding-box;
     border: 2px solid transparent;
     border-radius: 5px;
     transition: 1.0s;
-}
-
-::-webkit-scrollbar-thumb:vertical:hover,
-::-webkit-scrollbar-thumb:horizontal:hover {
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
     background-color: rgb(110, 110, 110);
     transition: 0.3s;
-}
-
-::-webkit-scrollbar-track {
+  }
+  
+  ::-webkit-scrollbar-track {
     background-color: transparent;
-}
-
-::-webkit-scrollbar-thumb:vertical:active,
-::-webkit-scrollbar-thumb:horizontal:active {
+  }
+  
+  ::-webkit-scrollbar-thumb:active {
     background: rgba(95, 91, 91, 1);
-}
-
-::-webkit-scrollbar-corner {
+  }
+  
+  ::-webkit-scrollbar-corner {
     background: none;
-}
+  }
+  
+  /* Animations */
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+  
+  @keyframes ripple {
+    0% { transform: scale(0); opacity: 1; }
+    100% { transform: scale(1.5); opacity: 0; }
+  }
+  
+  #saveCurrentCookieBtn.pulse {
+    animation: pulse 0.5s ease-in-out;
+  }
+  
+  #saveCurrentCookieBtn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100px;
+    height: 100px;
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+  }
+  
+  #saveCurrentCookieBtn.clicked::after {
+    animation: ripple 0.6s linear;
+  }

@@ -1,26 +1,49 @@
 let uiInjected = false;
 
+const actions = {
+  toggleUI: handleToggleUI,
+  getCurrentCookies: handleGetCurrentCookies,
+  applyProfile: handleApplyProfile
+};
+
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.action === 'toggleUI') {
-    if (!uiInjected) {
-      injectUI();
-    } else {
-      toggleUI();
-    }
-    sendResponse({ success: true });
-  } else if (request.action === 'getCurrentCookies') {
-    const cookies = document.cookie.split(';').map(cookie => cookie.trim());
-    const domain = window.location.hostname;
-    sendResponse({ cookies, domain });
-  } else if (request.action === 'applyProfile') {
-    applyProfile(request.cookies);
-    sendResponse({ success: true });
+  const action = actions[request.action];
+  if (action) {
+    action(request, sendResponse);
+    return true; // Indicates that the response is sent asynchronously
   }
 });
 
+function handleToggleUI(request, sendResponse) {
+  if (!uiInjected) {
+    injectUI();
+  } else {
+    toggleUI();
+  }
+  sendResponse({ success: true });
+}
+
+function handleGetCurrentCookies(request, sendResponse) {
+  const cookies = document.cookie.split(';').map(cookie => cookie.trim());
+  const domain = window.location.hostname;
+  sendResponse({ cookies, domain });
+}
+
+function handleApplyProfile(request, sendResponse) {
+  applyProfile(request.cookies);
+  sendResponse({ success: true });
+}
+
 function injectUI() {
+  const iframe = createIframe();
+  document.body.appendChild(iframe);
+  uiInjected = true;
+}
+
+function createIframe() {
   const iframe = document.createElement('iframe');
   iframe.src = chrome.runtime.getURL('iframe.html');
+  iframe.id = 'cookie-manager-iframe';
   iframe.style.cssText = `
     position: fixed;
     top: 20px;
@@ -32,9 +55,7 @@ function injectUI() {
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0,0,0,0.5);
   `;
-  iframe.id = 'cookie-manager-iframe';
-  document.body.appendChild(iframe);
-  uiInjected = true;
+  return iframe;
 }
 
 function toggleUI() {
@@ -45,30 +66,30 @@ function toggleUI() {
 }
 
 function applyProfile(cookies) {
-  // Clear existing cookies
-  const existingCookies = document.cookie.split(';');
-  for (let i = 0; i < existingCookies.length; i++) {
-    const cookie = existingCookies[i];
-    const eqPos = cookie.indexOf('=');
-    const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
-    document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;';
-  }
-
-  // Set new cookies
-  cookies.forEach(cookie => {
-    document.cookie = cookie;
-  });
-
-  // Reload the page to apply changes
+  clearExistingCookies();
+  setNewCookies(cookies);
   window.location.reload();
 }
 
-// Listen for messages from the iframe
+function clearExistingCookies() {
+  const existingCookies = document.cookie.split(';');
+  existingCookies.forEach(cookie => {
+    const name = cookie.split('=')[0].trim();
+    document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;`;
+  });
+}
+
+function setNewCookies(cookies) {
+  cookies.forEach(cookie => {
+    document.cookie = cookie;
+  });
+}
+
 window.addEventListener('message', (event) => {
   if (event.data.action === 'resize') {
     const iframe = document.getElementById('cookie-manager-iframe');
     if (iframe) {
-      iframe.style.height = event.data.height + 'px';
+      iframe.style.height = `${event.data.height}px`;
     }
   }
 });
