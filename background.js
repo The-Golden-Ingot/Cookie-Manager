@@ -63,7 +63,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
   if (info.menuItemId === "exportProfiles") {
     exportProfiles();
   } else if (info.menuItemId === "importProfiles") {
-    chrome.tabs.create({ url: 'chrome://extensions/?options=' + chrome.runtime.id });
+    importProfiles();
   }
 });
 
@@ -79,5 +79,19 @@ function exportProfiles() {
       filename: "cookie_profiles.json",
       saveAs: true
     });
+  });
+}
+
+function importProfiles() {
+  chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+    if (tabs[0]) {
+      chrome.tabs.sendMessage(tabs[0].id, {action: 'importProfiles'}, (response) => {
+        if (chrome.runtime.lastError) {
+          console.error('Error sending message:', chrome.runtime.lastError.message);
+        } else if (response && response.success) {
+          console.log('Import profiles message sent successfully');
+        }
+      });
+    }
   });
 }

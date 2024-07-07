@@ -15,6 +15,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   } else if (request.action === 'applyProfile') {
     applyProfile(request.cookies);
     sendResponse({ success: true });
+  } else if (request.action === 'importProfiles') {
+    importProfiles();
+    sendResponse({ success: true });
   }
 });
 
@@ -82,6 +85,32 @@ function refreshPageContent() {
   window.dispatchEvent(new CustomEvent('cookieProfileApplied'));
 
   console.log('Page content refreshed without reload');
+}
+
+function importProfiles() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json';
+
+  input.onchange = (event) => {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      try {
+        const importedProfiles = JSON.parse(e.target.result);
+        chrome.storage.local.set({ profiles: importedProfiles }, () => {
+          alert('Profiles imported successfully');
+        });
+      } catch (error) {
+        alert('Error importing profiles: ' + error.message);
+      }
+    };
+
+    reader.readAsText(file);
+  };
+
+  input.click();
 }
 
 // Listen for messages from the iframe
