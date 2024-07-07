@@ -1,7 +1,6 @@
 :root {
     --primary-color: #6366f1;
     --background-color: #1f2937;
-    --card-background: #374151;
     --text-color: #f3f4f6;
     --secondary-text-color: #9ca3af;
     --border-color: #4b5563;
@@ -27,7 +26,6 @@ html, body {
 }
 
 .container {
-    background-color: var(--card-background);
     border-radius: 16px;
     padding: 24px;
     width: 360px;
@@ -36,7 +34,6 @@ html, body {
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    box-shadow: 0 4px 6px var(--shadow-color);
 }
 
 /* Rest of the CSS remains the same */
@@ -45,6 +42,7 @@ html, body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin:auto;
     margin-bottom: 20px;
 }
 
@@ -65,13 +63,16 @@ h2 {
 }
 
 .address-bar {
-    background-color: var(--background-color);
+    background-color: #161718;
     border-radius: 8px;
     padding: 10px;
     text-align: center;
     margin-bottom: 20px;
+    margin:auto;
+    min-width:230px;
     font-size: 14px;
     color: var(--secondary-text-color);
+    
 }
 
 #saveCurrentCookieBtn {

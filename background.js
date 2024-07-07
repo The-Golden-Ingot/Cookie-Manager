@@ -30,3 +30,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 chrome.action.onClicked.addListener((tab) => {
   chrome.tabs.sendMessage(tab.id, { action: 'toggleUI' });
 });
+
+window.addEventListener('message', function(event) {
+  if (event.data.type === 'iframeLoaded') {
+    console.log('Iframe reported as loaded');
+    checkIframeVisibility();
+  }
+});
