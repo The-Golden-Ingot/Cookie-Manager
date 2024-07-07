@@ -1,0 +1,230 @@
+:root {
+    --primary-color: #6366f1;
+    --background-color: #1f2937;
+    --card-background: #374151;
+    --text-color: #f3f4f6;
+    --secondary-text-color: #9ca3af;
+    --border-color: #4b5563;
+    --shadow-color: rgba(0, 0, 0, 0.3);
+}
+
+body {
+    width: 360px;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+#cookie-profiles-manager {
+    position: relative;
+    z-index: 9999999;
+}
+
+.container {
+    background-color: var(--card-background);
+    border-radius: 16px;
+    padding: 24px;
+    width: 100%;
+    box-sizing: border-box;
+    max-height: 600px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.title {
+    display: flex;
+    align-items: center;
+}
+
+.icon {
+    font-size: 24px;
+    margin-right: 12px;
+}
+
+h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.address-bar {
+    background-color: var(--background-color);
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: var(--secondary-text-color);
+}
+
+#saveCurrentCookieBtn {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    border: none;
+    padding: 12px 20px;
+    font-size: 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 10px auto 20px;
+    display: block;
+    width: 80%;
+    text-align: center;
+    box-shadow: 0 2px 4px var(--shadow-color);
+    position: relative;
+    overflow: hidden;
+}
+
+#saveCurrentCookieBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px var(--shadow-color);
+}
+
+#saveCurrentCookieBtn:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px var(--shadow-color);
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+#saveCurrentCookieBtn.pulse {
+    animation: pulse 0.5s ease-in-out;
+}
+
+@keyframes ripple {
+    0% { transform: scale(0); opacity: 1; }
+    100% { transform: scale(1.5); opacity: 0; }
+}
+
+#saveCurrentCookieBtn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100px;
+    height: 100px;
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+}
+
+#saveCurrentCookieBtn.clicked::after {
+    animation: ripple 0.6s linear;
+}
+
+.profiles {
+    flex-grow: 1;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    padding: 4px;
+    position: relative;
+}
+
+.profile {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--background-color);
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    transition: all 0.3s ease;
+    cursor: grab;
+    user-select: none;
+    box-shadow: 0 2px 4px var(--shadow-color);
+    position: relative;
+    overflow: hidden;
+}
+
+.profile:active {
+    cursor: grabbing;
+}
+
+.profile span {
+    color: var(--text-color);
+    font-weight: 500;
+}
+
+.profile:hover {
+    background-color: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px var(--shadow-color);
+}
+
+.action-buttons {
+    display: flex;
+    gap: 8px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.profile:hover .action-buttons {
+    opacity: 1;
+}
+
+.action-btn {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 4px;
+    color: var(--text-color);
+    font-size: 16px;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.action-btn:hover {
+    transform: scale(1.1);
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.draggable-source--is-dragging {
+    opacity: 0;
+}
+
+.draggable-mirror {
+    opacity: 1 !important;
+    z-index: 10000000 !important;
+    transition: none;
+    position: fixed;
+    pointer-events: none;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.draggable-container--is-dragging {
+    cursor: grabbing;
+}
+
+.draggable-source--is-dragging {
+    opacity: 0.5;
+}
+
+.draggable-mirror {
+    opacity: 1 !important;
+    z-index: 10000000 !important;
+    transition: none;
+    position: fixed !important;
+    pointer-events: none;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
