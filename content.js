@@ -59,8 +59,29 @@ function applyProfile(cookies) {
     document.cookie = cookie;
   });
 
-  // Reload the page to apply changes
-  window.location.reload();
+  // Notify the page that cookies have changed
+  window.dispatchEvent(new Event('cookiesChanged'));
+
+  // Refresh the page content without reloading
+  refreshPageContent();
+}
+
+function refreshPageContent() {
+  // This function should implement logic to refresh the page content
+  // without a full page reload. The exact implementation will depend
+  // on the specific website structure and requirements.
+  
+  // Example: Reload specific elements or trigger AJAX requests
+  const dynamicElements = document.querySelectorAll('[data-dynamic]');
+  dynamicElements.forEach(element => {
+    // Implement logic to refresh each dynamic element
+    // This could involve re-fetching data or updating the element's content
+  });
+
+  // Example: Trigger a custom event that the page can listen for to update content
+  window.dispatchEvent(new CustomEvent('cookieProfileApplied'));
+
+  console.log('Page content refreshed without reload');
 }
 
 // Listen for messages from the iframe
