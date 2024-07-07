@@ -34,7 +34,7 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["iframe.html"],
+      "resources": ["iframe.html", "draggable.bundle.js"],
       "matches": ["<all_urls>"]
     }
   ]
