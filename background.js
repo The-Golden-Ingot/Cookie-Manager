@@ -2,11 +2,7 @@ chrome.runtime.onInstalled.addListener(() => {
   chrome.storage.local.get('profiles', (result) => {
     if (!result.profiles) {
       chrome.storage.local.set({
-        profiles: [
-          { name: 'Personal Profile', cookies: '' },
-          { name: 'Work Profile', cookies: '' },
-          { name: 'Default Profile', cookies: '' }
-        ]
+        profiles: []  // Initialize with an empty array instead of default profiles
       });
     }
   });

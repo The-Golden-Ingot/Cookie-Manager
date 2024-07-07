@@ -18,7 +18,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   } else if (request.action === 'importProfiles') {
     importProfiles();
     sendResponse({ success: true });
+  } else if (request.action === 'checkContentScriptReady') {
+    sendResponse({ready: true});
   }
+  return true; // Keep the message channel open for asynchronous responses
 });
 
 function injectUI() {
@@ -65,8 +68,11 @@ function applyProfile(cookies) {
   // Notify the page that cookies have changed
   window.dispatchEvent(new Event('cookiesChanged'));
 
-  // Reload the page
-  location.reload();
+  // Save UI state before reloading
+  chrome.storage.local.set({ uiState: { injected: true } }, () => {
+    // Reload the page
+    location.reload();
+  });
 }
 
 function importProfiles() {
@@ -105,17 +111,15 @@ window.addEventListener('message', (event) => {
   }
 });
 
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.action === 'checkContentScriptReady') {
-    sendResponse({ready: true});
-  } else if (request.action === 'toggleUI') {
-    // ... existing code ...
-  } else if (request.action === 'getCurrentCookies') {
-    // ... existing code ...
-  } else if (request.action === 'applyProfile') {
-    // ... existing code ...
-  } else if (request.action === 'importProfiles') {
-    // ... existing code ...
-  }
-  return true; // Keep the message channel open for asynchronous responses
-});
+// Check and restore UI state
+function checkAndRestoreUI() {
+  chrome.storage.local.get('uiState', (result) => {
+    if (result.uiState && result.uiState.injected) {
+      injectUI();
+      chrome.storage.local.remove('uiState'); // Clear the state after restoring
+    }
+  });
+}
+
+// Call this function when the content script is first loaded
+checkAndRestoreUI();
