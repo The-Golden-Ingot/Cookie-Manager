@@ -11,9 +11,13 @@ function initialize() {
         renderProfiles();
     });
 
-    // Get current tab URL
+    // Get current tab URL and display only the domain
     chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
-        addressBar.textContent = tabs[0].url;
+        const url = new URL(tabs[0].url);
+        let domain = url.hostname;
+        // Remove 'www.' if present
+        domain = domain.replace(/^www\./, '');
+        addressBar.textContent = domain;
     });
 
     saveCurrentCookieBtn.addEventListener('click', () => {
