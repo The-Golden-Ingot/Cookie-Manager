@@ -25,3 +25,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     return true;
   }
 });
+
+// Add this new listener for the extension icon click
+chrome.action.onClicked.addListener((tab) => {
+  chrome.tabs.sendMessage(tab.id, { action: 'toggleUI' });
+});
