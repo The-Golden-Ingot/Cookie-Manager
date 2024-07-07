@@ -85,11 +85,18 @@ function exportProfiles() {
 function importProfiles() {
   chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
     if (tabs[0]) {
-      chrome.tabs.sendMessage(tabs[0].id, {action: 'importProfiles'}, (response) => {
+      chrome.tabs.sendMessage(tabs[0].id, {action: 'checkContentScriptReady'}, (response) => {
         if (chrome.runtime.lastError) {
-          console.error('Error sending message:', chrome.runtime.lastError.message);
-        } else if (response && response.success) {
-          console.log('Import profiles message sent successfully');
+          console.error('Content script not ready:', chrome.runtime.lastError.message);
+          alert('Please navigate to a web page before importing profiles.');
+        } else {
+          chrome.tabs.sendMessage(tabs[0].id, {action: 'importProfiles'}, (response) => {
+            if (chrome.runtime.lastError) {
+              console.error('Error sending message:', chrome.runtime.lastError.message);
+            } else if (response && response.success) {
+              console.log('Import profiles message sent successfully');
+            }
+          });
         }
       });
     }

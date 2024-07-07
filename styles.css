@@ -242,6 +242,30 @@ h2 {
   overflow-y: auto;
 }
 
+.profile {
+  position: relative;
+  /* existing styles */
+}
+
 .profile.current {
-  background-color: #d3f9d8;
+  background-color: #4a5568;
+  border: 1px solid var(--primary-color);
+}
+
+.current-indicator {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  background-color: var(--primary-color);
+  color: var(--text-color);
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.profile:hover .current-indicator {
+  background-color: var(--text-color);
+  color: var(--primary-color);
 }

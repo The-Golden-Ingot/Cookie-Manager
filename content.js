@@ -104,3 +104,18 @@ window.addEventListener('message', (event) => {
     }
   }
 });
+
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.action === 'checkContentScriptReady') {
+    sendResponse({ready: true});
+  } else if (request.action === 'toggleUI') {
+    // ... existing code ...
+  } else if (request.action === 'getCurrentCookies') {
+    // ... existing code ...
+  } else if (request.action === 'applyProfile') {
+    // ... existing code ...
+  } else if (request.action === 'importProfiles') {
+    // ... existing code ...
+  }
+  return true; // Keep the message channel open for asynchronous responses
+});

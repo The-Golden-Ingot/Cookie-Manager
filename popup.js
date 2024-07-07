@@ -115,8 +115,13 @@ function initialize() {
         const profilesContainer = document.querySelector('.profiles');
         profilesContainer.querySelectorAll('.profile').forEach(profile => {
             profile.classList.remove('current');
+            profile.querySelector('.current-indicator')?.remove();
             if (profile.querySelector('span').textContent === profileName) {
                 profile.classList.add('current');
+                const indicator = document.createElement('div');
+                indicator.className = 'current-indicator';
+                indicator.textContent = '✓ Active';
+                profile.appendChild(indicator);
             }
         });
     }
