@@ -12,8 +12,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     const cookies = document.cookie.split(';').map(cookie => cookie.trim());
     const domain = window.location.hostname;
     sendResponse({ cookies, domain });
+  } else if (request.action === 'applyProfile') {
+    applyProfile(request.cookies);
+    sendResponse({ success: true });
   }
-  // ... other message handlers
 });
 
 function injectUI() {
@@ -41,3 +43,32 @@ function toggleUI() {
     iframe.style.display = iframe.style.display === 'none' ? 'block' : 'none';
   }
 }
+
+function applyProfile(cookies) {
+  // Clear existing cookies
+  const existingCookies = document.cookie.split(';');
+  for (let i = 0; i < existingCookies.length; i++) {
+    const cookie = existingCookies[i];
+    const eqPos = cookie.indexOf('=');
+    const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+    document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;';
+  }
+
+  // Set new cookies
+  cookies.forEach(cookie => {
+    document.cookie = cookie;
+  });
+
+  // Reload the page to apply changes
+  window.location.reload();
+}
+
+// Listen for messages from the iframe
+window.addEventListener('message', (event) => {
+  if (event.data.action === 'resize') {
+    const iframe = document.getElementById('cookie-manager-iframe');
+    if (iframe) {
+      iframe.style.height = event.data.height + 'px';
+    }
+  }
+});

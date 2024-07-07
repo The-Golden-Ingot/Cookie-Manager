@@ -23,17 +23,13 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       sendResponse({success: true});
     });
     return true;
+  } else if (request.type === 'iframeLoaded') {
+    console.log('Iframe reported as loaded');
+    // Implement any necessary logic here
   }
 });
 
 // Add this new listener for the extension icon click
 chrome.action.onClicked.addListener((tab) => {
   chrome.tabs.sendMessage(tab.id, { action: 'toggleUI' });
-});
-
-window.addEventListener('message', function(event) {
-  if (event.data.type === 'iframeLoaded') {
-    console.log('Iframe reported as loaded');
-    checkIframeVisibility();
-  }
 });

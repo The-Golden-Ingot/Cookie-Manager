@@ -5,8 +5,6 @@ function initialize() {
     const addressBar = document.querySelector('.address-bar');
     const saveCurrentCookieBtn = document.querySelector('#saveCurrentCookieBtn');
 
-    const isIframe = window !== window.top;
-
     // Load profiles
     chrome.runtime.sendMessage({action: 'getProfiles'}, (response) => {
         profiles = response;
@@ -93,9 +91,10 @@ function initialize() {
             profilesContainer.appendChild(profileElement);
         });
 
-        if (isIframe) {
-            window.parent.postMessage({ action: 'resize', height: document.body.scrollHeight }, '*');
-        }
+        // Remove this block as it's not needed in the popup context
+        // if (isIframe) {
+        //     window.parent.postMessage({ action: 'resize', height: document.body.scrollHeight }, '*');
+        // }
     }
 
     function updateProfiles() {
@@ -125,12 +124,12 @@ function initialize() {
         updateProfiles();
     });
 
-    // Add an event listener for messages from the parent
-    window.addEventListener('message', (event) => {
-        if (event.data.action === 'someAction') {
-            // Handle messages from the parent window
-        }
-    });
+    // Remove this event listener as it's not needed in the popup context
+    // window.addEventListener('message', (event) => {
+    //     if (event.data.action === 'someAction') {
+    //         // Handle messages from the parent window
+    //     }
+    // });
 }
 
 document.addEventListener('DOMContentLoaded', initialize);
