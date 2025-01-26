@@ -60,10 +60,6 @@ Cookie Manager is a Chrome extension designed to help users manage and apply coo
 - `draggable.bundle.js`: A library for creating draggable elements.
 - `icons/`: Directory containing various icons used in the extension.
 
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
 ## Contributing
 
 Contributions are welcome! Please open an issue or submit a pull request for any improvements or bug fixes.
